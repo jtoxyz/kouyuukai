@@ -1,0 +1,24 @@
+# Dependency directories
+node_modules/
+
+# Next.js build and environment files
+frontend/.next/
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Cloudflare Wrangler files
+backend/.wrangler/
+backend/.dev.vars
+
+# Environment files (root level)
+.env
+.env.local
+.env.*.local
+
+# Local logs and OS files
+*.log
+.DS_Store
+Thumbs.db
