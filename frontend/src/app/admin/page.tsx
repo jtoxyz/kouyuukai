@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { EVENT_CONFIG } from '../../config/eventConfig';
@@ -343,13 +343,13 @@ export default function AdminPage() {
     
     // Frozen first row & Auto Filter
     worksheet.views = [{ state: 'frozen', ySplit: 1 }];
-    worksheet.autoFilter = 'A1:M1';
+    worksheet.autoFilter = 'A1:N1';
     
     // Headers
     const headers = [
       'No.', '予約番号', '氏名', 'メールアドレス', '区分', '人数',
       '知ったきっかけ', 'その他のきっかけ', '今後開催してほしいイベント',
-      '申込日時', '受付状態', '受付日時', 'キャンセル状態'
+      '申込日時', '予約状態', '受付状態', '受付日時', 'キャンセル日時'
     ];
     
     const headerRow = worksheet.addRow(headers);
@@ -795,3 +795,4 @@ export default function AdminPage() {
     </div>
   );
 }
+
