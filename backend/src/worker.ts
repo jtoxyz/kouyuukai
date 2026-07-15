@@ -1,4 +1,7 @@
 import app, { type Bindings } from './index';
+import { handleEmailApi, runScheduledEmails, sendConfirmation, type EmailBindings } from './email';
+
+type WorkerBindings = Bindings & EmailBindings;
 
 function getCorsOrigin(request: Request): string {
   const origin = request.headers.get('Origin') || '';
@@ -35,14 +38,34 @@ function applyCorsHeaders(response: Response, origin: string): Response {
 }
 
 export default {
-  async fetch(request: Request, env: Bindings, ctx: ExecutionContext): Promise<Response> {
+  async fetch(request: Request, env: WorkerBindings, ctx: ExecutionContext): Promise<Response> {
     const origin = getCorsOrigin(request);
 
     if (request.method === 'OPTIONS') {
       return applyCorsHeaders(new Response(null, { status: 204 }), origin);
     }
 
+    const emailResponse = await handleEmailApi(request, env);
+    if (emailResponse) return applyCorsHeaders(emailResponse, origin);
+
     const response = await app.fetch(request, env, ctx);
+
+    const url = new URL(request.url);
+    if (request.method === 'POST' && url.pathname === '/api/reservations' && response.ok) {
+      const payload = await response.clone().json().catch(() => null) as { token?: string } | null;
+      if (payload?.token) {
+        ctx.waitUntil(sendConfirmation(env, payload.token).catch((error) => {
+          console.error(JSON.stringify({ type: 'confirmation_email_failed', error: String(error) }));
+        }));
+      }
+    }
+
     return applyCorsHeaders(response, origin);
+  },
+
+  async scheduled(_controller: ScheduledController, env: WorkerBindings, ctx: ExecutionContext): Promise<void> {
+    ctx.waitUntil(runScheduledEmails(env).catch((error) => {
+      console.error(JSON.stringify({ type: 'scheduled_email_job_failed', error: String(error) }));
+    }));
   },
 };
