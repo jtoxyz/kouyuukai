@@ -11,6 +11,10 @@ EVENT_DATE = "2026年10月31日（土） 13:30開場／14:00開演"
 EVENT_LOCATION = "大阪産業大学 本館1階 多目的ホール"
 EVENT_RESERVATION_END = "2026-10-23T23:59:59+09:00"
 
+# 5分ごとに送信対象を確認。1回40通まで処理し、無料枠とWorkerの外部通信数を抑える。
+[triggers]
+crons = ["*/5 * * * *"]
+
 [[d1_databases]]
 binding = "DB"
 database_name = "homecoming_db"
