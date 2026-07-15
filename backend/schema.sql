@@ -83,13 +83,13 @@ END;
 -- Seed initial event data (ID: 1)
 INSERT INTO events (id, title, capacity, reservation_start, reservation_end, is_accepting, reserved_count, created_at, updated_at)
 VALUES (
-  1, 
-  'ホームカミングデー 大産大学高校吹奏楽部演奏会', 
-  200, 
-  '2026-07-01T00:00:00+09:00', 
-  '2026-10-23T23:59:59+09:00', 
-  1, 
-  0, 
-  datetime('now'), 
+  1,
+  '大阪産業大学ホームカミングデー 付属高校吹奏部演奏会',
+  200,
+  '2026-07-01T00:00:00+09:00',
+  '2026-10-23T23:59:59+09:00',
+  1,
+  0,
+  datetime('now'),
   datetime('now')
 );
