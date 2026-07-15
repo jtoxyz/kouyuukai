@@ -23,9 +23,20 @@ export default function RootLayout({
       <body>
         <style>{`
           @media (max-width: 599px) {
+            .hero {
+              min-height: 280px;
+            }
+
+            .hero-overlay {
+              padding-left: 8px;
+              padding-right: 8px;
+            }
+
             .hero-title {
-              font-size: clamp(23px, 6.1vw, 27px);
-              line-height: 1.38;
+              font-size: clamp(30px, 8.5vw, 34px);
+              line-height: 1.32;
+              letter-spacing: -0.04em;
+              margin-bottom: 12px;
             }
           }
         `}</style>
