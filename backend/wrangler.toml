@@ -5,13 +5,13 @@ compatibility_date = "2024-03-01"
 
 [vars]
 # 重複予約の設定: 'A' (重複禁止), 'B' (警告して続行可能), 'C' (重複許可)
-DUPLICATE_RESERVATION_MODE = "A"
-# イベント基本情報 (未確定項目)
-EVENT_DATE = "2026年10月25日(日) 13:30開場 / 14:00開演"
-EVENT_LOCATION = "大阪産業大学附属高等学校 講堂"
+DUPLICATE_RESERVATION_MODE = "C"
+# イベント基本情報
+EVENT_DATE = "2026年10月31日(土) 13:30開場 / 14:00開演"
+EVENT_LOCATION = "大阪産業大学 本館 1階 多目的ホール"
 EVENT_RESERVATION_END = "2026-10-23T23:59:59+09:00"
 
 [[d1_databases]]
 binding = "DB"
 database_name = "homecoming_db"
-database_id = "local-db-id"
+database_id = "4f5c6806-eee6-4571-9f76-5e46781080aa"
