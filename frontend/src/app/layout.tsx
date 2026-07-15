@@ -9,8 +9,8 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "大阪産業大学ホームカミングデー｜付属高校吹奏楽部演奏会 予約フォーム",
-  description: "大阪産業大学ホームカミングデー・付属高校吹奏楽部演奏会の事前予約および当日受付確認システムです。",
+  title: "大阪産業大学ホームカミングデー｜付属高校吹奏部演奏会 予約フォーム",
+  description: "大阪産業大学ホームカミングデー・付属高校吹奏部演奏会の予約受付システムです。",
 };
 
 export default function RootLayout({
@@ -23,12 +23,13 @@ export default function RootLayout({
       <body>
         <style>{`
           .hero-title {
-            font-size: 0;
-            text-align: center;
+            font-size: 0 !important;
+            text-align: center !important;
+            white-space: pre-line !important;
           }
 
           .hero-title::before {
-            content: "大阪産業大学ホームカミングデー\\A付属高校吹奏楽部演奏会";
+            content: "大阪産業大学ホームカミングデー\\A付属高校吹奏部演奏会";
             display: block;
             white-space: pre-line;
             font-size: 24px;
@@ -36,12 +37,12 @@ export default function RootLayout({
           }
 
           .hero-subtitle {
-            font-size: 0;
-            text-align: center;
+            font-size: 0 !important;
+            text-align: center !important;
           }
 
           .hero-subtitle::before {
-            content: "予約受付中";
+            content: "申し込み受付";
             display: block;
             font-size: 18px;
           }
