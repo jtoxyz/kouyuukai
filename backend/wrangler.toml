@@ -14,4 +14,4 @@ EVENT_RESERVATION_END = "2026-10-23T23:59:59+09:00"
 [[d1_databases]]
 binding = "DB"
 database_name = "homecoming_db"
-database_id = "4f5c6806-eee6-4571-9f76-5e46781080aa"
+database_id = "2bc334ff-77dd-468e-aae4-4f9d81457b39"
