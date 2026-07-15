@@ -21,6 +21,14 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body>
+        <style>{`
+          @media (max-width: 599px) {
+            .hero-title {
+              font-size: clamp(23px, 6.1vw, 27px);
+              line-height: 1.38;
+            }
+          }
+        `}</style>
         {children}
       </body>
     </html>
