@@ -1,4 +1,4 @@
-import app from './index';
+import app, { type Bindings } from './index';
 
 function getCorsOrigin(request: Request): string {
   const origin = request.headers.get('Origin') || '';
@@ -35,7 +35,7 @@ function applyCorsHeaders(response: Response, origin: string): Response {
 }
 
 export default {
-  async fetch(request: Request, env: unknown, ctx: ExecutionContext): Promise<Response> {
+  async fetch(request: Request, env: Bindings, ctx: ExecutionContext): Promise<Response> {
     const origin = getCorsOrigin(request);
 
     if (request.method === 'OPTIONS') {

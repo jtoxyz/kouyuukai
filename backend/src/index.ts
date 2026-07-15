@@ -3,7 +3,7 @@ import { cors } from 'hono/cors';
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie';
 import { sign, verify } from 'hono/jwt';
 
-type Bindings = {
+export type Bindings = {
   DB: D1Database;
   DUPLICATE_RESERVATION_MODE: string;
   ADMIN_PASSWORD: string;
