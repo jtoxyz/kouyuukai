@@ -5,7 +5,7 @@ export const EVENT_CONFIG = {
   apiUrl: process.env.NEXT_PUBLIC_API_URL || '',
   
   // Default fallback values if API is unavailable
-  title: "大阪産業大学ホームカミングデー\n付属高校吹奏楽部演奏会",
+  title: "大阪産業大学ホームカミングデー\n付属高校吹奏部演奏会",
   intro: "ホームカミングデースペシャルコンサート♪\n心に響く音楽を、ぜひ会場でお楽しみください！",
   date: "2026年10月25日(日) 13:30開場 / 14:00開演",
   location: "大阪産業大学附属高等学校 講堂",
