@@ -46,6 +46,18 @@ export default function RootLayout({
             font-size: 18px;
           }
 
+          .ticket-status:not(.checked-in) + div {
+            font-size: 0 !important;
+          }
+
+          .ticket-status:not(.checked-in) + div::before {
+            content: "お申し込みありがとうございます。\\A当日、受付担当者にこの画面を見せてください。";
+            display: block;
+            white-space: pre-line;
+            font-size: 15px;
+            line-height: 1.6;
+          }
+
           @media (min-width: 600px) {
             .hero-title::before {
               font-size: 30px;
