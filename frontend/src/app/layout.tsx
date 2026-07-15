@@ -39,6 +39,33 @@ export default function RootLayout({
               margin-bottom: 12px;
             }
           }
+
+          /* 管理画面の予約者一覧を横に広く使い、操作ボタンを見切れさせない */
+          @media (min-width: 900px) {
+            body:has(.admin-table) .container {
+              max-width: 1280px !important;
+            }
+          }
+
+          .admin-table {
+            min-width: 980px;
+          }
+
+          .admin-table th:last-child,
+          .admin-table td:last-child {
+            min-width: 118px;
+            width: 118px;
+            text-align: center;
+            white-space: nowrap;
+          }
+
+          .admin-table td:last-child .btn {
+            min-width: 96px;
+            width: 100% !important;
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+            white-space: nowrap;
+          }
         `}</style>
         {children}
       </body>
