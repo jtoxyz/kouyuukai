@@ -209,14 +209,6 @@ app.post('/api/reservations', async (c) => {
       throw dbErr;
     }
     
-    // Placeholder for Email Send (Extensions)
-    try {
-      await sendConfirmationEmailMock(cleanName, email.trim(), code);
-    } catch (mailErr) {
-      // Log error but do not fail reservation
-      console.error('Email send skipped or failed:', mailErr);
-    }
-    
     return c.json({
       success: true,
       token,
@@ -230,12 +222,6 @@ app.post('/api/reservations', async (c) => {
     return c.json({ error: 'InternalError', message: 'サーバーエラーが発生しました。' }, 500);
   }
 });
-
-// Mock Email sending function
-async function sendConfirmationEmailMock(name: string, email: string, code: string) {
-  // Integrate external services (e.g. SendGrid, Mailchannels, Cloudflare Email Routing) here in the future
-  console.log(`[Email Mock] Sent confirmation to ${email} (Name: ${name}, Code: ${code})`);
-}
 
 // Query reservation lists based on a list of tokens (supports multiple tokens per device)
 app.post('/api/reservations/tokens', async (c) => {

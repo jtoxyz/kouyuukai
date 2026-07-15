@@ -2,6 +2,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 
 const fileUrl = new URL('../src/app/admin/page.tsx', import.meta.url);
 let source = await readFile(fileUrl, 'utf8');
+source = source.replace(/\r\n/g, '\n');
 
 const replacements = [
   [

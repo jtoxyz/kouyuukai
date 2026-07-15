@@ -379,13 +379,13 @@ export default function AdminPage() {
     
     // Frozen first row & Auto Filter
     worksheet.views = [{ state: 'frozen', ySplit: 1 }];
-    worksheet.autoFilter = 'A1:N1';
+    worksheet.autoFilter = 'A1:L1';
     
     // Headers
     const headers = [
       'No.', '予約番号', '氏名', 'メールアドレス', '区分', '人数',
       '知ったきっかけ', 'その他のきっかけ', '今後開催してほしいイベント',
-      '申込日時', '予約状態', '受付状態', '受付日時', 'キャンセル日時'
+      '申込日時', '予約状態', '受付日時'
     ];
     
     const headerRow = worksheet.addRow(headers);
@@ -407,7 +407,8 @@ export default function AdminPage() {
     });
     
     let currentNo = 1;
-    data.forEach(res => {
+    const activeData = data.filter(res => !res.cancelled_at);
+    activeData.forEach(res => {
       const row = worksheet.addRow([
         currentNo++,
         res.reservation_code,
@@ -420,8 +421,7 @@ export default function AdminPage() {
         res.requested_event || '',
         res.created_at ? new Date(res.created_at).toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' }) : '',
         res.checked_in === 1 ? '受付済' : '未受付',
-        res.checked_in_at ? new Date(res.checked_in_at).toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' }) : '',
-        res.cancelled_at ? `キャンセル済 (${new Date(res.cancelled_at).toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })})` : '有効'
+        res.checked_in_at ? new Date(res.checked_in_at).toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' }) : ''
       ]);
       row.height = 20;
       
@@ -454,9 +454,8 @@ export default function AdminPage() {
     worksheet.getColumn(8).width = 25;  // Source Other
     worksheet.getColumn(9).width = 40;  // Requested Event
     worksheet.getColumn(10).width = 22; // Created At
-    worksheet.getColumn(11).width = 12; // Check-in Status
-    worksheet.getColumn(12).width = 22; // Check-in At
-    worksheet.getColumn(13).width = 30; // Cancel Status
+    worksheet.getColumn(11).width = 12; // Reservation status
+    worksheet.getColumn(12).width = 22; // Check-in time
     
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });

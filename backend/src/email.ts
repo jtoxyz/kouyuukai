@@ -73,11 +73,23 @@ async function sendBrevo(env: EmailBindings, settings: Settings, to: string, sub
   return payload.messageId || null;
 }
 
-async function deliver(env: EmailBindings, template: Template, reservation: Reservation, settings: Settings): Promise<void> {
-  await env.DB.prepare(`INSERT INTO email_deliveries (template_id, reservation_id, recipient_email, status, attempted_at)
-    VALUES (?, ?, ?, 'pending', datetime('now'))
-    ON CONFLICT(template_id, reservation_id) DO UPDATE SET status='pending', error_message=NULL, attempted_at=datetime('now')`)
+async function claimDelivery(env: EmailBindings, template: Template, reservation: Reservation): Promise<boolean> {
+  const inserted = await env.DB.prepare(`INSERT OR IGNORE INTO email_deliveries (template_id, reservation_id, recipient_email, status, attempted_at)
+    VALUES (?, ?, ?, 'pending', datetime('now'))`)
     .bind(template.id, reservation.id, reservation.email).run();
+  if (inserted.meta.changes > 0) return true;
+
+  const retried = await env.DB.prepare(`UPDATE email_deliveries
+    SET status='pending', error_message=NULL, attempted_at=datetime('now')
+    WHERE template_id=? AND reservation_id=? AND status='failed'`)
+    .bind(template.id, reservation.id).run();
+  return retried.meta.changes > 0;
+}
+
+async function deliver(env: EmailBindings, template: Template, reservation: Reservation, settings: Settings): Promise<void> {
+  const claimed = await claimDelivery(env, template, reservation);
+  if (!claimed) return;
+
   try {
     const messageId = await sendBrevo(env, settings, reservation.email, render(template.subject, reservation, settings), render(template.body, reservation, settings));
     await env.DB.prepare(`UPDATE email_deliveries SET status='sent', provider_message_id=?, sent_at=datetime('now'), error_message=NULL WHERE template_id=? AND reservation_id=?`)
