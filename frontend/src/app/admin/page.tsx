@@ -38,10 +38,47 @@ export default function AdminPage() {
   useEffect(() => {
     fetchSummaryAndList();
   }, []);
+
+  const getStoredAdminToken = () => {
+    if (typeof window === 'undefined') return null;
+    return sessionStorage.getItem('admin_session_token');
+  };
+
+  const clearAdminSession = () => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('admin_session_token');
+    }
+    setIsLoggedIn(false);
+    setSummary(null);
+    setReservations([]);
+    setSelectedResDetail(null);
+    setDetailModalOpen(false);
+  };
+
+  const adminFetch = async (path: string, init: RequestInit = {}) => {
+    const headers = new Headers(init.headers);
+    const token = getStoredAdminToken();
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    const url = path.startsWith('http') ? path : `${EVENT_CONFIG.apiUrl}${path}`;
+    const response = await fetch(url, {
+      ...init,
+      headers,
+      credentials: 'include'
+    });
+
+    if (response.status === 401) {
+      clearAdminSession();
+    }
+
+    return response;
+  };
   
   const fetchSummaryAndList = async () => {
     try {
-      const resSum = await fetch(`${EVENT_CONFIG.apiUrl}/api/admin/summary`, { credentials: 'include' });
+      const resSum = await adminFetch('/api/admin/summary');
       if (resSum.ok) {
         const sumData = await resSum.json();
         setSummary(sumData);
@@ -63,8 +100,8 @@ export default function AdminPage() {
   
   const fetchReservationsList = async (query = searchQuery) => {
     try {
-      const url = query ? `${EVENT_CONFIG.apiUrl}/api/admin/reservations?search=${encodeURIComponent(query)}` : `${EVENT_CONFIG.apiUrl}/api/admin/reservations`;
-      const res = await fetch(url, { credentials: 'include' });
+      const url = query ? `/api/admin/reservations?search=${encodeURIComponent(query)}` : '/api/admin/reservations';
+      const res = await adminFetch(url);
       if (res.ok) {
         const data = await res.json();
         setReservations(data.reservations || []);
@@ -85,6 +122,10 @@ export default function AdminPage() {
         credentials: 'include'
       });
       if (res.ok) {
+        const data = await res.json();
+        if (data.token) {
+          sessionStorage.setItem('admin_session_token', data.token);
+        }
         setIsLoggedIn(true);
         fetchSummaryAndList();
       } else {
@@ -98,10 +139,8 @@ export default function AdminPage() {
   
   const handleLogout = async () => {
     try {
-      await fetch(`${EVENT_CONFIG.apiUrl}/api/admin/logout`, { method: 'POST', credentials: 'include' });
-      setIsLoggedIn(false);
-      setSummary(null);
-      setReservations([]);
+      await adminFetch('/api/admin/logout', { method: 'POST' });
+      clearAdminSession();
     } catch (e) {
       console.error(e);
     }
@@ -115,7 +154,7 @@ export default function AdminPage() {
   
   const handleViewDetail = async (id: number) => {
     try {
-      const res = await fetch(`${EVENT_CONFIG.apiUrl}/api/admin/reservations/${id}`, { credentials: 'include' });
+      const res = await adminFetch(`/api/admin/reservations/${id}`);
       if (res.ok) {
         const data = await res.json();
         setSelectedResDetail(data.reservation);
@@ -131,16 +170,15 @@ export default function AdminPage() {
   const handleToggleCheckin = async (id: number, currentStatus: number) => {
     setIsActionPending(true);
     try {
-      const res = await fetch(`${EVENT_CONFIG.apiUrl}/api/admin/reservations/${id}/checkin`, {
+      const res = await adminFetch(`/api/admin/reservations/${id}/checkin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ checked_in: currentStatus === 1 ? 0 : 1 }),
-        credentials: 'include'
+        body: JSON.stringify({ checked_in: currentStatus === 1 ? 0 : 1 })
       });
       if (res.ok) {
         // Refresh details if modal is open
         if (selectedResDetail && selectedResDetail.id === id) {
-          const updatedDetailRes = await fetch(`${EVENT_CONFIG.apiUrl}/api/admin/reservations/${id}`, { credentials: 'include' });
+          const updatedDetailRes = await adminFetch(`/api/admin/reservations/${id}`);
           if (updatedDetailRes.ok) {
             const data = await updatedDetailRes.json();
             setSelectedResDetail(data.reservation);
@@ -162,9 +200,8 @@ export default function AdminPage() {
     
     setIsActionPending(true);
     try {
-      const res = await fetch(`${EVENT_CONFIG.apiUrl}/api/admin/reservations/${id}/cancel`, {
-        method: 'POST',
-        credentials: 'include'
+      const res = await adminFetch(`/api/admin/reservations/${id}/cancel`, {
+        method: 'POST'
       });
       if (res.ok) {
         setDetailModalOpen(false);
@@ -191,11 +228,10 @@ export default function AdminPage() {
     
     setIsActionPending(true);
     try {
-      const res = await fetch(`${EVENT_CONFIG.apiUrl}/api/admin/event/toggle`, {
+      const res = await adminFetch('/api/admin/event/toggle', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ is_accepting: nextAccepting }),
-        credentials: 'include'
+        body: JSON.stringify({ is_accepting: nextAccepting })
       });
       if (res.ok) {
         await fetchSummaryAndList();
@@ -210,7 +246,7 @@ export default function AdminPage() {
   // Fetch unmasked lists for exporting Excel
   const fetchAllForExport = async (): Promise<any[]> => {
     try {
-      const res = await fetch(`${EVENT_CONFIG.apiUrl}/api/admin/reservations/export`, { credentials: 'include' });
+      const res = await adminFetch('/api/admin/reservations/export');
       if (res.ok) {
         const data = await res.json();
         return data.reservations || [];

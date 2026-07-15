@@ -67,7 +67,9 @@ function generateReservationCode(): string {
 
 // Helper: Verify Admin Session
 async function getAdminSession(c: any): Promise<boolean> {
-  const token = getCookie(c, 'admin_session');
+  const authorization = c.req.header('Authorization') || '';
+  const bearerMatch = authorization.match(/^Bearer\s+(.+)$/i);
+  const token = bearerMatch?.[1]?.trim() || getCookie(c, 'admin_session');
   if (!token) return false;
   try {
     const payload = await verify(token, c.env.SESSION_SECRET, 'HS256');
@@ -343,12 +345,12 @@ app.post('/api/admin/login', async (c) => {
     setCookie(c, 'admin_session', sessionToken, {
       httpOnly: true,
       secure: !isLocalhost, // secure only on production (non-localhost)
-      sameSite: 'Strict',
+      sameSite: 'None',
       path: '/',
       maxAge: 60 * 60 * 8 // 8 hours
     });
     
-    return c.json({ success: true });
+    return c.json({ success: true, token: sessionToken });
   } catch (err: any) {
     return c.json({ error: 'InternalError', message: 'ログイン処理に失敗しました。' }, 500);
   }
