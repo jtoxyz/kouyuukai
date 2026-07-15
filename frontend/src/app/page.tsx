@@ -79,7 +79,7 @@ export default function Page() {
           capacity: 200,
           reserved_count: 0,
           is_accepting: 1,
-          event_date: EVENT_CONFIG.date,
+          event_date: `${EVENT_CONFIG.date} ${EVENT_CONFIG.time}`,
           event_location: EVENT_CONFIG.location,
           reservation_end: "",
           duplicate_mode: 'A'
@@ -93,7 +93,7 @@ export default function Page() {
         capacity: 200,
         reserved_count: 0,
         is_accepting: 1,
-        event_date: EVENT_CONFIG.date,
+        event_date: `${EVENT_CONFIG.date} ${EVENT_CONFIG.time}`,
         event_location: EVENT_CONFIG.location,
         reservation_end: "",
         duplicate_mode: 'A'
@@ -303,8 +303,12 @@ export default function Page() {
       {/* Hero visual */}
       <div className="hero">
         <div className="hero-overlay">
-          <h1 className="hero-title">{event?.title || EVENT_CONFIG.title}</h1>
-          <p className="hero-subtitle">大産大学高校吹奏楽部演奏会 予約受付</p>
+          <h1 className="hero-title" aria-label="大阪産業大学 ホームカミングデー 付属高校吹奏部演奏会">
+            <span className="hero-title-line">大阪産業大学</span>
+            <span className="hero-title-line">♪ホームカミングデー♪</span>
+            <span className="hero-title-line">付属高校吹奏部演奏会</span>
+          </h1>
+          <p className="hero-subtitle">お申し込み受付</p>
         </div>
       </div>
       
@@ -322,13 +326,28 @@ export default function Page() {
         {view === 'home' && (
           <div className="card">
             <h2>演奏会のご案内</h2>
-            <div className="info-box" style={{ whiteSpace: 'pre-wrap' }}>
-              <strong>開催日時:</strong> {event?.event_date || EVENT_CONFIG.date}<br />
-              <strong>開催場所:</strong> {event?.event_location || EVENT_CONFIG.location}
+            <div className="info-box event-info-box">
+              <div className="event-info-item">
+                <strong>開催日</strong>
+                <span>{EVENT_CONFIG.date}</span>
+              </div>
+              <div className="event-info-item event-info-time">
+                <strong>時間</strong>
+                <span>{EVENT_CONFIG.time}</span>
+              </div>
+              <div className="event-info-item event-info-location">
+                <strong>開催場所</strong>
+                <span>{event?.event_location || EVENT_CONFIG.location}</span>
+              </div>
             </div>
             
-            <p style={{ whiteSpace: 'pre-wrap', marginBottom: '24px' }}>
-              {EVENT_CONFIG.intro}
+            <p className="intro-heading">
+              {EVENT_CONFIG.introTitleLines.map((line) => (
+                <span key={line}>{line}</span>
+              ))}
+            </p>
+            <p className="intro-text">
+              {EVENT_CONFIG.introText}
             </p>
             
             <div className="info-box" style={{ backgroundColor: '#FFF9C4', borderColor: '#FBC02D' }}>
@@ -426,7 +445,7 @@ export default function Page() {
                     '在学生',
                     '教員・職員',
                     '一般',
-                    '大阪産業大学附属高校吹奏楽部関係者'
+                    '大阪産業大学付属高校吹奏部関係者'
                   ].map((cat) => (
                     <label key={cat} className="radio-label" style={{ borderColor: category === cat ? 'var(--color-primary)' : '#CCCCCC', backgroundColor: category === cat ? '#E8F0FE' : '#FAFBFD' }}>
                       <input
@@ -449,9 +468,9 @@ export default function Page() {
                   申し込み人数
                   <span className="badge-required">必須</span>
                 </label>
-                <div className="radio-group" style={{ flexDirection: 'row', gap: '20px' }}>
-                  {['1', '2'].map((cnt) => (
-                    <label key={cnt} className="radio-label" style={{ flex: 1, textAlign: 'center', justifyContent: 'center', borderColor: participantCount === cnt ? 'var(--color-primary)' : '#CCCCCC', backgroundColor: participantCount === cnt ? '#E8F0FE' : '#FAFBFD' }}>
+                <div className="participant-count-grid">
+                  {['1', '2', '3', '4'].map((cnt) => (
+                    <label key={cnt} className="radio-label participant-count-option" style={{ borderColor: participantCount === cnt ? 'var(--color-primary)' : '#CCCCCC', backgroundColor: participantCount === cnt ? '#E8F0FE' : '#FAFBFD' }}>
                       <input
                         type="radio"
                         name="participantCount"
@@ -587,7 +606,7 @@ export default function Page() {
               <div className="info-box" style={{ backgroundColor: '#FFF9C4', borderColor: '#FBC02D', color: '#F57F17' }}>
                 <p style={{ fontWeight: 'bold', marginBottom: '8px' }}>⚠️ 重複警告</p>
                 <p>{warningMessage}</p>
-                <div style={{ display: 'flex', gap: '10px', marginTop: '12px' }}>
+                <div className="confirm-warning-actions">
                   <button 
                     className="btn btn-accent" 
                     style={{ height: '40px', fontSize: '16px' }}
@@ -608,7 +627,7 @@ export default function Page() {
             )}
             
             <div className="ticket" style={{ borderStyle: 'solid', borderWidth: '1px', borderColor: '#CCC' }}>
-              <div className="ticket-row">
+              <div className="ticket-row ticket-row-stack ticket-row-email">
                 <span className="ticket-label">メールアドレス</span>
                 <span className="ticket-value">{email}</span>
               </div>
@@ -624,16 +643,16 @@ export default function Page() {
                 <span className="ticket-label">申し込み人数</span>
                 <span className="ticket-value">{participantCount}名</span>
               </div>
-              <div className="ticket-row">
+              <div className="ticket-row ticket-row-stack">
                 <span className="ticket-label">知ったきっかけ</span>
                 <span className="ticket-value">
                   {discoverySource === 'その他' ? `その他（${discoverySourceOther}）` : discoverySource}
                 </span>
               </div>
               {requestedEvent && (
-                <div className="ticket-row" style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                  <span className="ticket-label" style={{ marginBottom: '4px' }}>今後希望するイベント</span>
-                  <span className="ticket-value" style={{ textAlign: 'left', fontWeight: 'normal', color: '#444' }}>{requestedEvent}</span>
+                <div className="ticket-row ticket-row-stack">
+                  <span className="ticket-label">今後希望するイベント</span>
+                  <span className="ticket-value">{requestedEvent}</span>
                 </div>
               )}
             </div>
@@ -760,10 +779,10 @@ export default function Page() {
               <div className="ticket">
                 <div className="ticket-header">
                   <div className={`ticket-status ${currentTicket.checked_in ? 'checked-in' : ''}`}>
-                    {currentTicket.checked_in ? '🟢 受付済み' : '予約確認済み'}
+                    {currentTicket.checked_in ? '受付済み' : 'お申し込みありがとうございます。'}
                   </div>
                   <div style={{ fontSize: '15px', color: '#666', marginTop: '6px' }}>
-                    {currentTicket.checked_in ? '当日の受付手続きは完了しています。' : '事前予約が確認できました。受付担当者にこの画面を見せてください。'}
+                    {currentTicket.checked_in ? '当日の受付手続きは完了しています。' : '当日、受付担当者にこの画面を見せてください。'}
                   </div>
                 </div>
                 

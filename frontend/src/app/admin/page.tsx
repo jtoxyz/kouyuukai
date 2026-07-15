@@ -257,7 +257,7 @@ export default function AdminPage() {
     // 1. Title Block
     worksheet.mergeCells('A1:E1');
     const titleRow = worksheet.getRow(1);
-    titleRow.getCell(1).value = `ホームカミングデー 大産大学高校吹奏楽部演奏会 受付用予約者リスト  (印刷日時: ${new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })})`;
+    titleRow.getCell(1).value = `ホームカミングデー 付属高校吹奏部演奏会 受付用予約者リスト  (印刷日時: ${new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })})`;
     titleRow.getCell(1).font = { name: 'Meiryo', size: 14, bold: true };
     titleRow.height = 30;
     titleRow.alignment = { vertical: 'middle' };

@@ -27,7 +27,7 @@ app.use('*', async (c, next) => {
   c.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
   
   if (c.req.method === 'OPTIONS') {
-    return c.text('', 204);
+    return new Response(null, { status: 204 });
   }
   await next();
 });
@@ -128,9 +128,9 @@ app.post('/api/reservations', async (c) => {
       return c.json({ error: 'ValidationError', message: '必須項目が入力されていません。' }, 400);
     }
     
-    const count = parseInt(participant_count, 10);
-    if (count !== 1 && count !== 2) {
-      return c.json({ error: 'ValidationError', message: '申し込み人数は1名または2名のみです。' }, 400);
+    const count = Number(participant_count);
+    if (!Number.isInteger(count) || count < 1 || count > 4) {
+      return c.json({ error: 'ValidationError', message: '申し込み人数は1名から4名までです。' }, 400);
     }
     
     if (requested_event && requested_event.length > 500) {
