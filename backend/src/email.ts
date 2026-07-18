@@ -181,9 +181,13 @@ export async function handleEmailApi(request: Request, env: EmailBindings): Prom
     return json({ success: true });
   }
   if (match && request.method === 'DELETE') {
-    const row = await env.DB.prepare('SELECT template_type FROM email_templates WHERE id=?').bind(Number(match[1])).first<{ template_type: string }>();
-    if (row?.template_type === 'confirmation') return json({ message: '予約完了メールは削除できません。無効化してください。' }, 400);
-    await env.DB.prepare('DELETE FROM email_templates WHERE id=?').bind(Number(match[1])).run();
+    const templateId = Number(match[1]);
+    const row = await env.DB.prepare('SELECT template_type FROM email_templates WHERE id=?')
+      .bind(templateId).first<{ template_type: string }>();
+    if (!row) return json({ message: 'メールテンプレートが見つかりません。' }, 404);
+    if (row.template_type === 'confirmation') return json({ message: '予約完了メールは削除できません。無効化してください。' }, 400);
+    await env.DB.prepare('DELETE FROM email_deliveries WHERE template_id=?').bind(templateId).run();
+    await env.DB.prepare('DELETE FROM email_templates WHERE id=?').bind(templateId).run();
     return json({ success: true });
   }
 
