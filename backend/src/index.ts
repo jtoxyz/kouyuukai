@@ -83,6 +83,17 @@ async function getAdminSession(c: any): Promise<boolean> {
 // 1. PUBLIC ENDPOINTS
 // ==========================================
 
+// Health check. Confirms the worker is reachable and the D1 binding resolves,
+// so a deploy can be verified without touching reservation data.
+app.get('/api/health', async (c) => {
+  try {
+    await c.env.DB.prepare('SELECT 1').first();
+    return c.json({ status: 'ok', database: 'ok' });
+  } catch (err: any) {
+    return c.json({ status: 'ok', database: 'error', message: err.message }, 503);
+  }
+});
+
 // Get Event Information (Includes location and dates from config/vars)
 app.get('/api/event', async (c) => {
   try {
