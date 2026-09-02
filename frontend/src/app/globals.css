@@ -385,6 +385,16 @@ textarea.form-control {
   overflow-wrap: break-word;
 }
 
+.note-emphasis {
+  color: var(--color-error);
+  font-weight: 700;
+}
+
+/* 変更告知は文節ごとの span で組んである。狭い画面でも文節の途中では折り返さない。 */
+.event-info-notice span {
+  display: inline-block;
+}
+
 .intro-heading {
   display: grid;
   gap: 2px;

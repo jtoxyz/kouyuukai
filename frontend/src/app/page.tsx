@@ -335,7 +335,11 @@ export default function Page() {
                 <strong>時間</strong>
                 <span>{EVENT_CONFIG.time}</span>
               </div>
-              <p className="event-info-notice">{EVENT_CONFIG.timeNotice}</p>
+              <p className="event-info-notice">
+                {EVENT_CONFIG.timeNotice.map((part) => (
+                  <span key={part}>{part}</span>
+                ))}
+              </p>
               <div className="event-info-item event-info-location">
                 <strong>開催場所</strong>
                 <span>{event?.event_location || EVENT_CONFIG.location}</span>
@@ -354,7 +358,7 @@ export default function Page() {
             <div className="info-box" style={{ backgroundColor: '#FFF9C4', borderColor: '#FBC02D' }}>
               <strong>注意事項:</strong>
               <ul>
-                <li style={{ marginBottom: '6px', color: 'var(--color-error)', fontWeight: 'bold' }}>
+                <li className="note-emphasis" style={{ marginBottom: '6px' }}>
                   {EVENT_CONFIG.timeChangeNote}
                 </li>
                 {EVENT_CONFIG.notes.map((note, idx) => (
