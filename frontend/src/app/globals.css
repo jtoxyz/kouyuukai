@@ -378,7 +378,8 @@ textarea.form-control {
 /* 開場・開演時間の変更告知。時間を1行に保つ nowrap の外に置き、枠内で折り返させる。 */
 .event-info-notice {
   color: var(--color-error);
-  font-size: 14px;
+  /* 注意喚起なので、枠内の他の文字 (.info-box の 17px) より大きくする。 */
+  font-size: 19px;
   font-weight: 700;
   line-height: 1.5;
   white-space: normal;
