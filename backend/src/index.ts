@@ -1,5 +1,4 @@
 import { Hono } from 'hono';
-import { cors } from 'hono/cors';
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie';
 import { sign, verify } from 'hono/jwt';
 
@@ -15,22 +14,8 @@ export type Bindings = {
 
 const app = new Hono<{ Bindings: Bindings }>();
 
-// Enable CORS for localhost and frontend domain
-app.use('*', async (c, next) => {
-  const origin = c.req.header('Origin') || '';
-  const isLocal = origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:');
-  
-  // Set CORS headers dynamically
-  c.header('Access-Control-Allow-Origin', isLocal ? origin : origin);
-  c.header('Access-Control-Allow-Credentials', 'true');
-  c.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  c.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-  
-  if (c.req.method === 'OPTIONS') {
-    return new Response(null, { status: 204 });
-  }
-  await next();
-});
+// CORS は worker.ts のホワイトリストだけで扱う。ここで付けると許可外オリジンにも
+// ヘッダーが残り、worker.ts 側が消さないため全オリジン許可になってしまう。
 
 // Helper: Normalize Email
 function normalizeEmail(email: string): string {

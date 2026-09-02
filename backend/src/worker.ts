@@ -21,14 +21,21 @@ function getCorsOrigin(request: Request): string {
 function applyCorsHeaders(response: Response, origin: string): Response {
   const headers = new Headers(response.headers);
 
+  // Vary は許可の有無にかかわらず必要。オリジンごとに応答が変わることをキャッシュに伝える。
+  headers.set('Vary', 'Origin');
+
   if (origin) {
     headers.set('Access-Control-Allow-Origin', origin);
     headers.set('Access-Control-Allow-Credentials', 'true');
-    headers.set('Vary', 'Origin');
+    headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  } else {
+    // 許可外オリジンには CORS を一切与えない。下流が付けたヘッダーも必ず落とす。
+    headers.delete('Access-Control-Allow-Origin');
+    headers.delete('Access-Control-Allow-Credentials');
+    headers.delete('Access-Control-Allow-Methods');
+    headers.delete('Access-Control-Allow-Headers');
   }
-
-  headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
 
   return new Response(response.body, {
     status: response.status,
