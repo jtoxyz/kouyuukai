@@ -333,13 +333,9 @@ export default function Page() {
               </div>
               <div className="event-info-item event-info-time">
                 <strong>時間</strong>
-                <span>
-                  {EVENT_CONFIG.time}
-                  <span style={{ display: 'block', marginTop: '6px', color: 'var(--color-error)', fontWeight: 'bold', fontSize: '14px', lineHeight: 1.5 }}>
-                    {EVENT_CONFIG.timeNotice}
-                  </span>
-                </span>
+                <span>{EVENT_CONFIG.time}</span>
               </div>
+              <p className="event-info-notice">{EVENT_CONFIG.timeNotice}</p>
               <div className="event-info-item event-info-location">
                 <strong>開催場所</strong>
                 <span>{event?.event_location || EVENT_CONFIG.location}</span>

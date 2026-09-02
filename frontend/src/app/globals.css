@@ -375,6 +375,16 @@ textarea.form-control {
   white-space: nowrap;
 }
 
+/* 開場・開演時間の変更告知。時間を1行に保つ nowrap の外に置き、枠内で折り返させる。 */
+.event-info-notice {
+  color: var(--color-error);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
 .intro-heading {
   display: grid;
   gap: 2px;
@@ -625,7 +635,8 @@ textarea.form-control {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .event-info-location {
+  .event-info-location,
+  .event-info-notice {
     grid-column: 1 / -1;
   }
 
