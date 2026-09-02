@@ -1,4 +1,4 @@
-const BACKEND_ORIGIN = 'https://homecoming-backend.osukouyuukai.workers.dev';
+const BACKEND_ORIGIN = 'https://koyukai-backend.osukouyukai.workers.dev';
 
 export async function onRequest(context) {
   const backendUrl = new URL(context.request.url);

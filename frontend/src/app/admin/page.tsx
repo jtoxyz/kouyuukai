@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { EVENT_CONFIG } from '../../config/eventConfig';
 import ExcelJS from 'exceljs';
 
@@ -530,9 +531,14 @@ export default function AdminPage() {
           <h1 style={{ fontSize: '28px', color: 'var(--color-primary)' }}>管理者ダッシュボード</h1>
           <p style={{ fontSize: '14px', color: '#666' }}>試作版運用確認用画面</p>
         </div>
-        <button className="btn btn-outline" style={{ width: 'auto', height: '40px', fontSize: '15px' }} onClick={handleLogout}>
-          ログアウト
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          <Link href="/admin/email" className="btn btn-outline" style={{ width: 'auto', height: '40px', fontSize: '15px', display: 'inline-flex', alignItems: 'center' }}>
+            メール自動送信設定
+          </Link>
+          <button className="btn btn-outline" style={{ width: 'auto', height: '40px', fontSize: '15px' }} onClick={handleLogout}>
+            ログアウト
+          </button>
+        </div>
       </div>
       
       {apiError && (
