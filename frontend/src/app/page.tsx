@@ -333,7 +333,12 @@ export default function Page() {
               </div>
               <div className="event-info-item event-info-time">
                 <strong>時間</strong>
-                <span>{EVENT_CONFIG.time}</span>
+                <span>
+                  {EVENT_CONFIG.time}
+                  <span style={{ display: 'block', marginTop: '6px', color: 'var(--color-error)', fontWeight: 'bold', fontSize: '14px', lineHeight: 1.5 }}>
+                    {EVENT_CONFIG.timeNotice}
+                  </span>
+                </span>
               </div>
               <div className="event-info-item event-info-location">
                 <strong>開催場所</strong>
@@ -353,6 +358,9 @@ export default function Page() {
             <div className="info-box" style={{ backgroundColor: '#FFF9C4', borderColor: '#FBC02D' }}>
               <strong>注意事項:</strong>
               <ul>
+                <li style={{ marginBottom: '6px', color: 'var(--color-error)', fontWeight: 'bold' }}>
+                  {EVENT_CONFIG.timeChangeNote}
+                </li>
                 {EVENT_CONFIG.notes.map((note, idx) => (
                   <li key={idx} style={{ marginBottom: '6px' }}>{note}</li>
                 ))}
