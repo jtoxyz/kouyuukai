@@ -15,6 +15,8 @@ EVENT_RESERVATION_END = "2026-10-23T23:59:59+09:00"
 [triggers]
 crons = ["*/5 * * * *"]
 
+# database_id はアカウント上の homecoming_db の実IDと必ず一致させること。
+# 一致していないとデプロイが code 10181 で失敗する。
 [[d1_databases]]
 binding = "DB"
 database_name = "homecoming_db"
